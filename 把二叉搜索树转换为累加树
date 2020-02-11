@@ -1,0 +1,47 @@
+给定一个二叉搜索树（Binary Search Tree），把它转换成为累加树（Greater Tree)，使得每个节点的值是原来的节点值加上所有大于它的节点值之和。
+
+例如：
+
+输入: 二叉搜索树:
+              5
+            /   \
+           2     13
+
+输出: 转换为累加树:
+             18
+            /   \
+          20     13
+
+
+
+由于是二叉搜索树，所以节点的值按照中序遍历是依次递增的。转换成累加树要使每个节点的值是原来的节点值加上所有大于它的节点值之和，
+对于每一个节点，大于它的节点都在中序遍历序列的右边。所以我们用右-根-左的顺序遍历二叉搜索树，在遍历到每个节点时，
+将该节点的值更新为该节点原来的值加上sum，因为这个sum在此时已经是所有大于当前节点的节点值之和。在更新完当前节点的值之后，将sum置为此值。
+如此进行，当遍历完二叉搜索树之后，就完成了累加树的转换。
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* convertBST(TreeNode* root) {
+        int sum = 0;
+        add(root, sum);
+        return root;
+    }
+    void add(TreeNode* root, int& sum)
+    {
+        if(!root)
+            return;
+        add(root->right, sum);
+        root->val += sum;
+        sum = root->val;
+        add(root->left, sum);
+    }
+};
